@@ -1,26 +1,47 @@
 # otto-looks
 
 Looks for Otto: a wallpaper, an icon theme, a cursor theme, an accent colour
-and the desktop settings that go with them.
+and the dock and desktop settings that go with them.
+
+Every look is published on its own, as a package,
+`ghcr.io/nongio/otto-looks/<look>`, and installed by name with `otto-look`,
+which ships with Otto:
 
 ```sh
-otto-look circles
+otto-look circles        # the latest version of Circles
+otto-look circles@1      # a given version
 ```
+
+It installs the look's icon and cursor themes into `~/.local/share/icons`,
+puts its wallpaper under `~/.local/share/backgrounds/otto-looks/`, and sets
+everything on the running session through Otto's settings service, so it
+applies at once and survives a restart.
+
+## Looks
+
+| Look | | Install |
+|---|---|---|
+| **Béton Brut** | A concrete monolith against a cold sky, and one signal yellow. | `otto-look beton-brut` |
+| **Circles** | Kandinsky's Circles in a Circle, 1923. | `otto-look circles` |
+| **Crate Digger** | 52nd Street in the rain, 1948, on aubergine. | `otto-look crate-digger` |
+| **Deep Field** | Webb's First Deep Field, near-black and one violet. | `otto-look deep-field` |
+| **Ember** | Out-of-focus lights melted into one warm glow on black. | `otto-look ember` |
+| **Otto98** | Windows 98 SE icons on a cool, dithered teal. Square, flat, minimal. | `otto-look otto98` |
+| **Pomodoro** | One wet tomato on a flat green field. | `otto-look pomodoro` |
+| **Section 9** | A misted high-rise city in fog grey and ice. | `otto-look section-9` |
+| **Supremus** | Malevich's Suprematist planes on white, 1915. | `otto-look supremus` |
+| **Swan** | Hilma af Klint's split disc on red, 1915. | `otto-look swan` |
+
+## What a look is
 
 A look is a folder in `looks/`: a `look.toml` that names the wallpaper, the
 icon and cursor themes and the settings, plus any file the look ships
-itself. Anything else is downloaded from its makers, pinned by sha256.
-`otto-look` unpacks the themes into `~/.local/share/icons`, puts the wallpaper
-under `~/.local/share/backgrounds/otto-looks/`, then sets everything on the
-running session through Otto's settings service, so it applies at once and
-survives a restart.
+itself. Themes are downloaded from their makers, pinned by sha256.
 
 ```
-looks/pomodoro/
+looks/<look>/
   look.toml
-looks/otto98/
-  look.toml
-  wallpaper.png
+  wallpaper.jpg
 ```
 
 ```toml
@@ -36,8 +57,7 @@ author = "Auguste A"
 source = "https://unsplash.com/photos/WQ2WOHw0C7I"
 licence = "Unsplash Licence"
 licence_url = "https://unsplash.com/license"
-url = "https://images.unsplash.com/photo-1605315024122-7fd363c1f7ab?fm=jpg&q=90&w=3840&h=2160&fit=crop"
-sha256 = "ac98ad62699e0e107c45b6c96f44fbcc0b4071047a0e52590c7a3d53ac38936b"
+url = "wallpaper.jpg"
 ```
 
 A `url` is either a file in the look's folder (`url = "wallpaper.png"`, no
@@ -83,10 +103,8 @@ url = "https://github.com/ful1e5/Bibata_Cursor/releases/download/v2.0.7/Bibata-M
 sha256 = "7d3495864e5bbef02f5e77de760b2905903b63c71495a78ef6306d19a3b556d8"
 ```
 
-`otto-look circles` installs the latest version of Circles, and
-`otto-look circles@1` a given one. It also takes a look's folder, its
-`look.toml`, a packed `.tar.gz`, or a URL to one, for trying a look while
-you make it:
+While you make a look, `otto-look` also takes its folder, its `look.toml`,
+a packed `.tar.gz`, or a URL to one:
 
 ```sh
 otto-look looks/pomodoro
@@ -104,7 +122,8 @@ otto-look looks/pomodoro
 3. Check it: `scripts/dry-run looks/<id>` shows what it would install and
    set, without touching your session, and fails on a missing credit or a
    wrong sha256.
-4. Open a pull request. CI runs the same dry run and checks that a new
+4. Add a row for it to the table of looks at the top of this README.
+5. Open a pull request. CI runs the same dry run and checks that a new
    look's author is you.
 
 When you change a published look, bump its `version`. Merging to `main`
