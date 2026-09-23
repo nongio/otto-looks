@@ -1,0 +1,35 @@
+# A push to main that changes a look publishes every look whose version
+# isn't in the registry yet, as the package ghcr.io/nongio/otto-looks/<id>,
+# tagged with its version and "latest". Run it by hand to publish one look,
+# e.g. to try it out.
+name: Release
+
+on:
+  push:
+    branches: [main]
+    paths: ["looks/**"]
+  workflow_dispatch:
+    inputs:
+      look:
+        description: "Only this look (its folder name); empty for every look with a new version"
+        required: false
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oras-project/setup-oras@v1
+
+      - name: Log in to ghcr.io
+        run: echo "${{ github.token }}" | oras login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      - name: Publish new versions
+        env:
+          LOOK: ${{ inputs.look }}
+        run: scripts/release $LOOK

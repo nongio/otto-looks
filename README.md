@@ -4,7 +4,7 @@ Looks for Otto: a wallpaper, an icon theme, a cursor theme, an accent colour
 and the desktop settings that go with them.
 
 ```sh
-otto-look install otto
+otto-look circles
 ```
 
 A look is a folder in `looks/`: a `look.toml` that names the wallpaper, the
@@ -83,10 +83,13 @@ url = "https://github.com/ful1e5/Bibata_Cursor/releases/download/v2.0.7/Bibata-M
 sha256 = "7d3495864e5bbef02f5e77de760b2905903b63c71495a78ef6306d19a3b556d8"
 ```
 
-`otto-look` also takes a look's folder, its `look.toml`, or a URL to one:
+`otto-look circles` installs the latest version of Circles, and
+`otto-look circles@1` a given one. It also takes a look's folder, its
+`look.toml`, a packed `.tar.gz`, or a URL to one, for trying a look while
+you make it:
 
 ```sh
-otto-look install looks/pomodoro
+otto-look looks/pomodoro
 ```
 
 ## Adding a look
@@ -104,7 +107,9 @@ otto-look install looks/pomodoro
 4. Open a pull request. CI runs the same dry run and checks that a new
    look's author is you.
 
-When you change a published look, bump its `version`.
+When you change a published look, bump its `version`. Merging to `main`
+publishes every look whose version is new, as a GitHub package:
+`ghcr.io/nongio/otto-looks/<look>`, tagged with its version and `latest`.
 
 ## Testing
 

@@ -1,0 +1,58 @@
+#!/bin/sh
+# release: publish every look whose version isn't in the registry yet.
+#
+#   scripts/release [--dry] [<id>...]
+#
+# Each look is packed as <id>.tar.gz, its folder at the top, and pushed as a
+# GitHub package, ghcr.io/nongio/otto-looks/<id>, tagged with its version
+# and "latest". A version already there is skipped, so running it again is
+# safe. With ids, only those looks; with --dry, it packs them into dist/ and
+# says what it would push. Needs oras, logged in to ghcr.io, for a real one.
+set -eu
+
+REGISTRY=${OTTO_LOOKS_REGISTRY:-ghcr.io/nongio/otto-looks}
+here=$(cd "$(dirname "$0")/.." && pwd)
+dry=""
+[ "${1:-}" = --dry ] && { dry=1; shift; }
+[ $# -gt 0 ] || set -- $(ls "$here/looks")
+out="$here/dist"; mkdir -p "$out"
+
+# value <file> <section> <key>: a string or number from a look.toml.
+value() {
+    awk -v s="[$2]" -v k="$3" '
+        /^\[/ { on = ($0 == s); next }
+        on { line = $0; sub(/[ \t]*=.*/, "", line)
+             if (line == k) { sub(/^[^=]*=[ \t]*/, ""); sub(/[ \t]+#.*$/, "")
+                              gsub(/^"|"$/, ""); print; exit } }' "$1"
+}
+
+for id in "$@"; do
+    def="$here/looks/$id/look.toml"
+    [ -f "$def" ] || { echo "release: no look $id" >&2; exit 1; }
+    version=$(value "$def" look version)
+    ref="$REGISTRY/$id:$version"
+
+    if [ -z "$dry" ] && oras manifest fetch "$ref" > /dev/null 2>&1; then
+        echo "$id $version: already published"
+        continue
+    fi
+
+    # Same bytes every time for the same folder.
+    (cd "$out" && tar --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner \
+        -C "$here/looks" -cf - "$id" | gzip -n > "$id.tar.gz")
+
+    if [ -n "$dry" ]; then
+        echo "$id $version: would push dist/$id.tar.gz ($(du -h "$out/$id.tar.gz" | cut -f1)) as $ref and latest"
+        continue
+    fi
+    # The package page shows the description; source links it to this repo.
+    (cd "$out" && oras push "$ref" --artifact-type application/vnd.otto.look \
+        --annotation "org.opencontainers.image.source=https://github.com/nongio/otto-looks" \
+        --annotation "org.opencontainers.image.title=$(value "$def" look name)" \
+        --annotation "org.opencontainers.image.description=$(value "$def" look description) Install: otto-look $id" \
+        --annotation "org.opencontainers.image.version=$version" \
+        --annotation "org.opencontainers.image.authors=$(value "$def" look author)" \
+        "$id.tar.gz")
+    oras tag "$ref" latest
+    echo "$id $version: published"
+done

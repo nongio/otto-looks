@@ -40,7 +40,7 @@ Test in this order, and don't skip to the live session.
    using, so only do it when they say so:
 
    ```sh
-   ./otto-look install looks/<id>
+   ./otto-look looks/<id>
    ```
 
    Then read back what landed:
@@ -53,8 +53,12 @@ Test in this order, and don't skip to the live session.
    look at it. Never send input to the live session: no typing, clicking or
    synthetic keys.
 
-3. **Published.** Once on `main`, `./otto-look install <id>` fetches the look
-   from GitHub; run the dry run on it the same way.
+3. **Published.** A push to `main` that changes a look publishes every look
+   whose `version` is new, as the package `ghcr.io/nongio/otto-looks/<id>`
+   tagged with its version and `latest`. `otto-look <id>` installs the latest
+   and `otto-look <id>@<version>` a given one; `scripts/dry-run <id>` checks
+   what was published. A new package starts private: make it public once in
+   its package settings on GitHub.
 
 ## Themes are never mirrored
 
@@ -112,8 +116,10 @@ the font. The running compositor's `Describe` is the authority:
 
 | Script | What |
 |--------|------|
-| `otto-look install <id \| folder \| file \| url>` | install and apply a look |
+| `otto-look <id>[@<version>]` | install and apply a published look |
+| `otto-look <folder \| look.toml \| look.tar.gz \| url>` | install and apply a look you're making |
 | `scripts/dry-run <look>...` | what looks would install and set, without touching anything |
+| `scripts/release [--dry] [<id>...]` | publish every look whose version is new; CI runs it on `main` |
 | `scripts/record <id> [name]` | turn the running desktop into `looks/<id>/look.toml`, reusing the credits of themes and wallpapers other looks already use |
 
 ## Don't
