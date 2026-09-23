@@ -57,8 +57,8 @@ Test in this order, and don't skip to the live session.
    whose `version` is new, as the package `ghcr.io/nongio/otto-looks/<id>`
    tagged with its version and `latest`. `otto-look <id>` installs the latest
    and `otto-look <id>@<version>` a given one; `scripts/dry-run <id>` checks
-   what was published. A new package starts private: make it public once in
-   its package settings on GitHub.
+   what was published. Packages are public, like this repository, so
+   installing needs no login.
 
 ## Themes are never mirrored
 
@@ -117,7 +117,6 @@ the font. The running compositor's `Describe` is the authority:
 | Script | What |
 |--------|------|
 | `otto-look <id>[@<version>]` | install and apply a published look |
-| `otto-look list` | the published looks, from the `index` package `scripts/release` keeps |
 | `otto-look list` | the published looks, from the `index` package `scripts/release` keeps |
 | `otto-look <folder \| look.toml \| look.tar.gz \| url>` | install and apply a look you're making |
 | `scripts/dry-run <look>...` | what looks would install and set, without touching anything |

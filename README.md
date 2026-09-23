@@ -9,7 +9,6 @@ which ships with Otto:
 
 ```sh
 otto-look list           # the published looks
-otto-look list           # the published looks
 otto-look circles        # the latest version of Circles
 otto-look circles@1      # a given version
 ```
