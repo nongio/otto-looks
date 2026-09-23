@@ -1,9 +1,9 @@
 # Ember: out-of-focus lights run together into one warm glow, orange at
 # the rim and pale pink at the heart, on black. The dark one of the set.
 #
-# The photo is linked, not hosted: the Unsplash Licence lets anyone use it
-# but not gather it into a collection of their own, so otto-look fetches it
-# from Unsplash, cropped to 16:9 at 3840x2160, and checks it by its sha256.
+# The photo is Unsplash's own 3840x2160 crop, kept in this folder: the
+# Unsplash Licence allows sharing it, and Unsplash's server re-encodes its
+# crops, so a linked one can't be pinned by sha256.
 
 [look]
 name = "Ember"
@@ -17,8 +17,7 @@ author = "Zooey Li"
 source = "https://unsplash.com/photos/JflS6iQXtRs"
 licence = "Unsplash Licence"
 licence_url = "https://unsplash.com/license"
-url = "https://images.unsplash.com/photo-1783721451016-485e5a49fe96?fm=jpg&q=90&w=3840&h=2160&fit=crop"
-sha256 = "a4c22fb300642af0677af12769e09d7aaffff498d177f3049a8abb4b30e866d6"
+url = "wallpaper.jpg"
 
 # WhiteSur ships as source only: no release files and no distribution
 # packages, and WhiteSur-dark links into WhiteSur, so both come from the
