@@ -117,6 +117,7 @@ the font. The running compositor's `Describe` is the authority:
 | Script | What |
 |--------|------|
 | `otto-look <id>[@<version>]` | install and apply a published look |
+| `otto-look list` | the published looks, from the `index` package `scripts/release` keeps |
 | `otto-look <folder \| look.toml \| look.tar.gz \| url>` | install and apply a look you're making |
 | `scripts/dry-run <look>...` | what looks would install and set, without touching anything |
 | `scripts/release [--dry] [<id>...]` | publish every look whose version is new; CI runs it on `main` |

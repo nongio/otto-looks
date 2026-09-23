@@ -3,6 +3,7 @@
 #
 #   otto-look <look>[@<version>]     the latest, or that version, of a look
 #                                    published from github.com/nongio/otto-looks
+#   otto-look list                   the published looks
 #   otto-look <folder | look.toml | look.tar.gz | url>
 #                                    a look of your own, while you make it
 #
@@ -158,7 +159,10 @@ fetch_package() {
     # ghcr.io refuses a token for a package that doesn't exist or isn't public.
     token=$(curl -fsS "https://$host/token?scope=repository:$repo:pull" 2>/dev/null |
         sed -n 's/.*"token":"\([^"]*\)".*/\1/p') || true
-    [ -n "$token" ] || die "no look $look at $REGISTRY"
+    if [ -z "$token" ]; then
+        [ "$look" != index ] || die "no list of looks at $REGISTRY"
+        die "no look $look at $REGISTRY"
+    fi
     # The manifest lists the config first and the file after "layers".
     digest=$(curl -fsS -H "Authorization: Bearer $token" \
         -H "Accept: application/vnd.oci.image.manifest.v1+json" \
@@ -168,6 +172,15 @@ fetch_package() {
     curl -fsSL -H "Authorization: Bearer $token" "https://$host/v2/$repo/blobs/$digest" \
         -o "$2" || die "cannot download $1"
     echo "${digest#sha256:}  $2" | sha256sum -c --status - || die "$1 does not match its digest"
+}
+
+# list: the published looks, from the registry's index of them.
+list() {
+    work=$(mktemp -d); trap 'rm -rf "$work"' EXIT
+    fetch_package index "$work/index.tsv"
+    awk -F '\t' '{ printf "%-16s %-4s %s: %s\n", $1, $2, $3, $4 }' "$work/index.tsv"
+    echo
+    echo "Install one with: otto-look <look>"
 }
 
 install() {
@@ -241,7 +254,12 @@ install() {
 }
 
 case $# in
-    1) case $1 in -*) ;; *) install "$1"; exit ;; esac ;;
+    1) case $1 in
+           list) list; exit ;;
+           index | index@*) ;;
+           -*) ;;
+           *) install "$1"; exit ;;
+       esac ;;
 esac
-echo "usage: otto-look <look>[@<version>] | <folder | look.toml | look.tar.gz | url>" >&2
+echo "usage: otto-look <look>[@<version>] | list | <folder | look.toml | look.tar.gz | url>" >&2
 exit 2

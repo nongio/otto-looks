@@ -8,6 +8,10 @@
 # and "latest". A version already there is skipped, so running it again is
 # safe. With ids, only those looks; with --dry, it packs them into dist/ and
 # says what it would push. Needs oras, logged in to ghcr.io, for a real one.
+#
+# Then it rebuilds the index, the package <registry>/index: one line per
+# look in the registry, "<id> TAB <version> TAB <name> TAB <description>",
+# which `otto-look list` reads. "index" is therefore not a look's name.
 set -eu
 
 REGISTRY=${OTTO_LOOKS_REGISTRY:-ghcr.io/nongio/otto-looks}
@@ -29,6 +33,7 @@ value() {
 for id in "$@"; do
     def="$here/looks/$id/look.toml"
     [ -f "$def" ] || { echo "release: no look $id" >&2; exit 1; }
+    [ "$id" != index ] || { echo "release: index is reserved for the list of looks" >&2; exit 1; }
     version=$(value "$def" look version)
     ref="$REGISTRY/$id:$version"
 
@@ -56,3 +61,28 @@ for id in "$@"; do
     oras tag "$ref" latest
     echo "$id $version: published"
 done
+
+# The index lists the version each look's "latest" points at, so a look
+# that isn't published yet isn't listed.
+: > "$out/index.tsv"
+for id in $(ls "$here/looks"); do
+    def="$here/looks/$id/look.toml"
+    if [ -n "$dry" ]; then
+        version=$(value "$def" look version)
+    else
+        version=$(oras manifest fetch "$REGISTRY/$id:latest" 2>/dev/null |
+            tr -d '\n' | sed -n 's/.*"org\.opencontainers\.image\.version": *"\([^"]*\)".*/\1/p')
+        [ -n "$version" ] || continue
+    fi
+    printf '%s\t%s\t%s\t%s\n' "$id" "$version" "$(value "$def" look name)" \
+        "$(value "$def" look description)" >> "$out/index.tsv"
+done
+if [ -n "$dry" ]; then
+    echo "index: would push $(wc -l < "$out/index.tsv") looks as $REGISTRY/index:latest"
+    exit
+fi
+(cd "$out" && oras push "$REGISTRY/index:latest" --artifact-type application/vnd.otto.looks.index \
+    --annotation "org.opencontainers.image.source=https://github.com/nongio/otto-looks" \
+    --annotation "org.opencontainers.image.description=The list of published Otto looks, for otto-look list" \
+    index.tsv)
+echo "index: $(wc -l < "$out/index.tsv") looks"
