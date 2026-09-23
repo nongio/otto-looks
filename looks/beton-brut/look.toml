@@ -1,0 +1,56 @@
+# Béton Brut: raw concrete. Everything grey and one signal yellow allowed on
+# it. From the béton-brut rice in otto-rices; the wallpaper is Simone
+# Hutsch's photo, cropped and pulled from teal to a cold neutral.
+
+[look]
+name = "Béton Brut"
+version = 1
+author = "nongio"
+description = "A concrete monolith against a cold sky, and one signal yellow."
+
+[wallpaper]
+title = "Gray concrete monolith"
+author = "Simone Hutsch"
+source = "https://unsplash.com/photos/ItvVUpgac0o"
+licence = "Unsplash Licence"
+licence_url = "https://unsplash.com/license"
+url = "wallpaper.jpg"
+
+# WhiteSur ships as source only, so it comes from the tagged source
+# through the theme's own installer, into the user's icons.
+[icons]
+theme = "WhiteSur-dark"
+author = "Vince Liu"
+source = "https://github.com/vinceliuice/WhiteSur-icon-theme"
+licence = "GPL-3.0"
+url = "https://github.com/vinceliuice/WhiteSur-icon-theme/archive/refs/tags/2026-09-10.tar.gz"
+sha256 = "406c9cd59705583f1754b0eaca96cc48bafda042b88ef143f16d8ae1820ecd95"
+build = "./install.sh -d \"$DEST\""
+
+# KDE's own cursor, from the Breeze release archive, which ships it built.
+[cursors]
+theme = "Breeze_Light"
+author = "KDE Visual Design Group"
+source = "https://invent.kde.org/plasma/breeze"
+licence = "LGPL-3.0-or-later"
+url = "https://cdn.download.kde.org/stable/plasma/6.7.5/breeze-6.7.5.tar.xz"
+sha256 = "aa05c0c31c852ed5b137327e7798fd763a54c643875d5d8070625475e0af6976"
+
+[settings]
+background_color = "#191a1b"
+cursor_size = 24
+theme_scheme = "Dark"
+accent_color = "#f2c300"
+rounded_corners = false
+frosting = true
+window_controls_side = "right"
+show_maximize_button = false
+
+# The dock, as the rice has it: along the bottom, icons tinted.
+# White at full strength is an exact greyscale: every icon keeps its shading
+# and loses only its colour, so the yellow stays the only colour on screen.
+dock.position = "bottom"
+dock.size = 0.85
+dock.colorize_icons = true
+dock.colorize_color = "#ffffff"
+dock.colorize_intensity = 1.0

@@ -1,0 +1,125 @@
+#!/bin/sh
+# record: turn the desktop you have now into a new look.
+#
+#   scripts/record <id> [name]
+#
+# Reads the running session's settings from org.otto.Settings and writes
+# looks/<id>/look.toml. A theme or wallpaper another look already uses keeps
+# that look's credits and link; anything new gets empty credits to fill in,
+# and a wallpaper nobody links yet is copied into the folder. The dry run
+# fails until every credit is there.
+set -eu
+
+usage() { echo "usage: scripts/record <id> [name]" >&2; exit 2; }
+[ $# -ge 1 ] || usage
+
+# Every setting a look can change, besides the wallpaper and the themes.
+SETTINGS="background_color cursor_size theme_scheme accent_color
+    rounded_corners frosting window_controls_side show_maximize_button
+    dock.position dock.size dock.colorize_icons dock.colorize_color
+    dock.colorize_intensity"
+
+id=$1; name=${2:-$1}
+here=$(cd "$(dirname "$0")/.." && pwd)
+dir="$here/looks/$id"
+[ ! -e "$dir" ] || { echo "record: $dir already exists" >&2; exit 1; }
+
+# get <key>: the setting as a TOML value, "blue" or true or 24 or 0.85. A
+# decimal keeps its point (busctl prints 1.0 as 1), so it goes back as one.
+get() {
+    set -- $(busctl --user call org.otto.Settings /org/otto/Settings org.otto.Settings Get s "$1")
+    type=$2; shift 2
+    case $type:$* in d:*.*) echo "$*" ;; d:*) echo "$*.0" ;; *) echo "$*" ;; esac
+}
+unquote() { v=$1; v=${v#\"}; echo "${v%\"}"; }
+
+# block <file> <section>: that table and its subtables, without the comments
+# and blank lines that lead into the next one.
+block() {
+    awk -v s="$2" '
+        /^\[/ { on = ($0 == "[" s "]" || index($0, "[" s ".") == 1) }
+        on && /^[ \t]*(#|$)/ { held = held $0 "\n"; next }
+        on { printf "%s%s\n", held, $0; held = "" }' "$1"
+}
+
+# known <section> <key> <value>: the [section] of the first look whose key is
+# exactly value, credits and all; nothing if no look has it.
+known() {
+    for f in "$here"/looks/*/look.toml; do
+        b=$(block "$f" "$1")
+        printf '%s\n' "$b" | awk -v k="$2" -v v="\"$3\"" '
+            { line = $0; sub(/[ \t]*=.*/, "", line); val = $0; sub(/^[^=]*=[ \t]*/, "", val)
+              sub(/[ \t]+#.*$/, "", val) }
+            line == k && val == v { hit = 1 } END { exit !hit }' || continue
+        printf '%s\n' "$b"; return
+    done
+}
+
+empty_credits() {
+    printf 'author = ""\nsource = ""\nlicence = ""\n'
+}
+
+mkdir -p "$dir"
+author=$(gh api user --jq .login 2>/dev/null || git config github.user || true)
+{
+    echo "[look]"
+    echo "name = \"$name\""
+    echo "version = 1"
+    echo "author = \"$author\""
+    echo "description = \"\""
+    echo
+
+    image=$(unquote "$(get background_image)")
+    if [ -f "$image" ]; then
+        sum=$(sha256sum < "$image" | cut -d' ' -f1)
+        known=$(known wallpaper sha256 "$sum")
+        if [ -z "$known" ]; then
+            # A look that ships this very file in its folder: same credits,
+            # and the file comes along.
+            for w in "$here"/looks/*/wallpaper.*; do
+                [ -f "$w" ] && [ "$(sha256sum < "$w" | cut -d' ' -f1)" = "$sum" ] || continue
+                known=$(block "${w%/*}/look.toml" wallpaper)
+                cp "$w" "$dir/"
+                break
+            done
+        fi
+        if [ -n "$known" ]; then
+            echo "$known"
+        else
+            ext=${image##*.}
+            cp "$image" "$dir/wallpaper.$ext"
+            echo "# Copied from $image. Keep it here only if its licence lets us"
+            echo "# share it; otherwise link the original with url and sha256."
+            echo "[wallpaper]"
+            echo "title = \"\""
+            empty_credits
+            echo "url = \"wallpaper.$ext\""
+        fi
+        echo
+    fi
+
+    for s in icons:icon_theme cursors:cursor_theme; do
+        theme=$(unquote "$(get "${s#*:}")")
+        [ -n "$theme" ] || continue
+        known=$(known "${s%:*}" theme "$theme")
+        if [ -n "$known" ]; then
+            echo "$known"
+        else
+            echo "[${s%:*}]"
+            echo "theme = \"$theme\""
+            empty_credits
+            echo "url = \"\""
+            echo "sha256 = \"\""
+        fi
+        echo
+    done
+
+    echo "[settings]"
+    for key in $SETTINGS; do
+        echo "$key = $(get "$key")"
+    done
+} > "$dir/look.toml"
+
+echo "wrote looks/$id/look.toml"
+grep -n '= ""' "$dir/look.toml" | sed 's/^/  to fill in: line /' || true
+echo "check it with: scripts/dry-run looks/$id"

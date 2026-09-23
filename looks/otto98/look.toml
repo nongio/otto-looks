@@ -1,0 +1,46 @@
+# Otto98: the Windows 98 Second Edition icons of nestoris' SE98 theme and
+# Chicago95's classic white pointer on a flat, dithered teal, square corners.
+
+[look]
+name = "Otto98"
+version = 1
+author = "nongio"
+description = "Windows 98 SE icons on a cool, dithered teal. Square, flat, minimal."
+
+[wallpaper]
+title = "Otto98"
+author = "Riccardo Canalicchio"
+source = "https://github.com/nongio/otto-looks/tree/main/looks/otto98"
+licence = "MIT"
+url = "wallpaper.png"
+
+# Not packaged by the distributions (only the AUR's se98-icon-theme-git), so
+# the upstream release archive, pinned.
+[icons]
+theme = "SE98"
+author = "nestoris"
+source = "https://github.com/nestoris/Win98SE"
+licence = "GPL-2.0"
+url = "https://github.com/nestoris/Win98SE/archive/refs/tags/v0.2.16.1.tar.gz"
+sha256 = "2d5db208f7f1a4e02702a88807e8093026a492fce1f8c016ea7abc561fcc4454"
+
+# Chicago95 states its licence as "GPL-3.0+/MIT" without saying which part is
+# which, and ships no LICENSE file; the licence_url is that statement.
+[cursors]
+theme = "Chicago95_Cursor_White"
+author = "grassmunk and the Chicago95 contributors"
+source = "https://github.com/grassmunk/Chicago95"
+licence = "GPL-3.0+/MIT"
+licence_url = "https://github.com/grassmunk/Chicago95#code-and-license"
+url = "https://github.com/grassmunk/Chicago95/archive/refs/tags/v3.0.1.tar.gz"
+sha256 = "ddf0e35c00899ce0cea752db09f71d1e28ec3caf15e0653838c0d7b3bc5e043a"
+
+[settings]
+background_color = "#0D606B"
+cursor_size = 32               # the only size Chicago95 draws
+theme_scheme = "Light"
+accent_color = "#000080"
+rounded_corners = false
+frosting = true
+window_controls_side = "right"
+show_maximize_button = true

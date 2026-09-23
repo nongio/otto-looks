@@ -1,0 +1,46 @@
+#!/bin/sh
+# dry-run: what a look would install and set, without touching anything.
+#
+#   scripts/dry-run <name | folder | file | url>...
+#
+# Installs each look into a throwaway home against a stub busctl, then lists
+# the files it wrote and every setting it would set. Theme installers aren't
+# run; they show as "would run:" lines. A wrong sha256 or a missing credit
+# stops it with an error, as a real install would.
+set -eu
+
+[ $# -gt 0 ] || { echo "usage: scripts/dry-run <name | folder | file | url>..." >&2; exit 2; }
+here=$(cd "$(dirname "$0")/.." && pwd)
+status=0
+
+for look in "$@"; do
+    tmp=$(mktemp -d)
+    mkdir -p "$tmp/bin" "$tmp/home"
+    cat > "$tmp/bin/busctl" <<'EOF'
+#!/bin/sh
+# Stub: print the setting instead of setting it. Arguments end in
+# "Set sv <key> <type> <value>".
+shift $(($# - 3))
+echo "$1 $2 $3" >> "$OTTO_LOOK_SETTINGS"
+echo "s \"applied\""
+EOF
+    chmod +x "$tmp/bin/busctl"
+
+    echo "== $look"
+    if env PATH="$tmp/bin:$PATH" HOME="$tmp/home" XDG_DATA_HOME="$tmp/home/.local/share" \
+        OTTO_LOOK_DRY_RUN=1 OTTO_LOOK_SETTINGS="$tmp/settings" \
+        "$here/otto-look" install "$look" < /dev/null > "$tmp/log" 2>&1; then
+        grep 'would run:' "$tmp/log" || true
+        echo "files:"
+        (cd "$tmp/home" && find . -type f -path '*/icons/*/index.theme' -o -type f -path '*/backgrounds/*') |
+            sed 's|^\./|  ~/|' | sort
+        echo "settings:"
+        sed 's/^/  /' "$tmp/settings"
+        sed -n '/^Credits:/,$p' "$tmp/log"
+    else
+        sed 's/^/  /' "$tmp/log"
+        status=1
+    fi
+    rm -rf "$tmp"
+done
+exit $status

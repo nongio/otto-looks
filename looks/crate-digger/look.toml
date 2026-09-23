@@ -1,0 +1,57 @@
+# Crate Digger: a listening room. William P. Gottlieb's 52nd Street in the
+# rain, graded toward aubergine with the neon left hot, and one hot pink.
+# From the crate-digger rice in otto-rices.
+#
+# Gottlieb dedicated the collection to the public domain; the Library of
+# Congress notes that "rights of privacy and publicity may apply".
+
+[look]
+name = "Crate Digger"
+version = 1
+author = "nongio"
+description = "52nd Street in the rain, 1948, on aubergine."
+
+[wallpaper]
+title = "52nd Street, New York, N.Y., ca. July 1948"
+author = "William P. Gottlieb"
+source = "https://commons.wikimedia.org/wiki/File:(52nd_Street,_New_York,_N.Y.,_ca._July_1948)_(LOC)_(4977075418).jpg"
+licence = "Public domain"
+licence_url = "http://lcweb2.loc.gov/diglib/ihas/html/gottlieb/gottlieb-copyright.html"
+url = "wallpaper.jpg"
+
+# WhiteSur ships as source only, so it comes from the tagged source
+# through the theme's own installer, into the user's icons.
+[icons]
+theme = "WhiteSur-dark"
+author = "Vince Liu"
+source = "https://github.com/vinceliuice/WhiteSur-icon-theme"
+licence = "GPL-3.0"
+url = "https://github.com/vinceliuice/WhiteSur-icon-theme/archive/refs/tags/2026-09-10.tar.gz"
+sha256 = "406c9cd59705583f1754b0eaca96cc48bafda042b88ef143f16d8ae1820ecd95"
+build = "./install.sh -d \"$DEST\""
+
+[cursors]
+theme = "Bibata-Modern-Classic"
+author = "Abdulkaiz Khatri"
+source = "https://github.com/ful1e5/Bibata_Cursor"
+licence = "GPL-3.0"
+url = "https://github.com/ful1e5/Bibata_Cursor/releases/download/v2.0.7/Bibata-Modern-Classic.tar.xz"
+sha256 = "7d3495864e5bbef02f5e77de760b2905903b63c71495a78ef6306d19a3b556d8"
+
+[settings]
+background_color = "#171024"
+cursor_size = 24
+theme_scheme = "Dark"
+accent_color = "#e0407f"
+rounded_corners = true
+frosting = true
+window_controls_side = "left"
+show_maximize_button = false
+
+# The dock, as the rice has it: along the bottom, icons tinted.
+# Brass, the rice's second voice: the pink accent would fight the neon.
+dock.position = "bottom"
+dock.size = 0.9
+dock.colorize_icons = true
+dock.colorize_color = "#f0c060"
+dock.colorize_intensity = 1.0

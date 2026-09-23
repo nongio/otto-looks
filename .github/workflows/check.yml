@@ -1,0 +1,57 @@
+# Every pull request dry-runs the looks it touches: credits, sha256s, files
+# and settings, the same check `scripts/dry-run` does locally. A new look's
+# author must be the GitHub user opening the pull request.
+name: Check
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  looks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Find the looks that changed
+        id: looks
+        run: |
+          if [ "${{ github.event_name }}" = pull_request ]; then
+            range="origin/${{ github.base_ref }}...HEAD"
+          else
+            range="${{ github.event.before }}..${{ github.sha }}"
+          fi
+          # Everything when otto-look or the scripts change, or on a first push
+          # with nothing to compare against.
+          if files=$(git diff --name-only "$range" 2>/dev/null) &&
+             ! echo "$files" | grep -qE '^(otto-look|scripts/)'; then
+            changed=$(echo "$files" | grep '^looks/' | cut -d/ -f2 | sort -u)
+          else
+            changed=$(ls looks)
+          fi
+          echo "looks=$(echo $changed)" >> "$GITHUB_OUTPUT"
+
+      - name: A new look is credited to whoever opens it
+        if: github.event_name == 'pull_request' && steps.looks.outputs.looks != ''
+        run: |
+          for id in ${{ steps.looks.outputs.looks }}; do
+            [ -f "looks/$id/look.toml" ] || continue
+            git cat-file -e "origin/${{ github.base_ref }}:looks/$id/look.toml" 2>/dev/null && continue
+            author=$(sed -n '/^\[look\]/,/^\[/{s/^author *= *"\(.*\)".*/\1/p}' "looks/$id/look.toml")
+            if [ "$author" != "${{ github.event.pull_request.user.login }}" ]; then
+              echo "::error file=looks/$id/look.toml::[look] author is \"$author\"; a new look's author is the GitHub user who opens it (${{ github.event.pull_request.user.login }})"
+              exit 1
+            fi
+          done
+
+      - name: Dry run
+        if: steps.looks.outputs.looks != ''
+        run: |
+          set --
+          for id in ${{ steps.looks.outputs.looks }}; do
+            [ -f "looks/$id/look.toml" ] && set -- "$@" "looks/$id"
+          done
+          [ $# -eq 0 ] || scripts/dry-run "$@"

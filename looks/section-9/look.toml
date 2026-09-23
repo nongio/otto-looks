@@ -1,0 +1,56 @@
+# Section 9: cold and quiet. A misted city, fog grey and ice, and nothing on
+# screen allowed to be warm. From the section-9 rice in otto-rices; the
+# wallpaper is Ivan Cheremisin's photo, cropped, cooled and desaturated.
+
+[look]
+name = "Section 9"
+version = 1
+author = "nongio"
+description = "A misted high-rise city in fog grey and ice."
+
+[wallpaper]
+title = "A very tall building in the middle of a city"
+author = "Ivan Cheremisin"
+source = "https://unsplash.com/photos/p6aN1YXZ1Vc"
+licence = "Unsplash Licence"
+licence_url = "https://unsplash.com/license"
+url = "wallpaper.jpg"
+
+# WhiteSur ships as source only, so it comes from the tagged source
+# through the theme's own installer, into the user's icons.
+[icons]
+theme = "WhiteSur-dark"
+author = "Vince Liu"
+source = "https://github.com/vinceliuice/WhiteSur-icon-theme"
+licence = "GPL-3.0"
+url = "https://github.com/vinceliuice/WhiteSur-icon-theme/archive/refs/tags/2026-09-10.tar.gz"
+sha256 = "406c9cd59705583f1754b0eaca96cc48bafda042b88ef143f16d8ae1820ecd95"
+build = "./install.sh -d \"$DEST\""
+
+# KDE's own cursor, from the Breeze release archive, which ships it built.
+[cursors]
+theme = "Breeze_Light"
+author = "KDE Visual Design Group"
+source = "https://invent.kde.org/plasma/breeze"
+licence = "LGPL-3.0-or-later"
+url = "https://cdn.download.kde.org/stable/plasma/6.7.5/breeze-6.7.5.tar.xz"
+sha256 = "aa05c0c31c852ed5b137327e7798fd763a54c643875d5d8070625475e0af6976"
+
+[settings]
+background_color = "#1e1e2e"
+cursor_size = 24
+theme_scheme = "Dark"
+accent_color = "#7fd4e6"
+rounded_corners = true
+frosting = true
+window_controls_side = "left"
+show_maximize_button = false
+
+# The dock, as the rice has it: down the left edge, icons tinted.
+# 0.85, not 1.0: the icons keep a trace of their own colour so they are
+# still tellable apart, and the strip reads as one cold instrument.
+dock.position = "left"
+dock.size = 0.9
+dock.colorize_icons = true
+dock.colorize_color = "#7fd4e6"
+dock.colorize_intensity = 0.85

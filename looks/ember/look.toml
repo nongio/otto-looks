@@ -1,0 +1,59 @@
+# Ember: out-of-focus lights run together into one warm glow, orange at
+# the rim and pale pink at the heart, on black. The dark one of the set.
+#
+# The photo is linked, not hosted: the Unsplash Licence lets anyone use it
+# but not gather it into a collection of their own, so otto-look fetches it
+# from Unsplash, cropped to 16:9 at 3840x2160, and checks it by its sha256.
+
+[look]
+name = "Ember"
+version = 1
+author = "nongio"
+description = "Out-of-focus lights melted into one warm glow on black."
+
+[wallpaper]
+title = "Abstract red and orange bokeh light"
+author = "Zooey Li"
+source = "https://unsplash.com/photos/JflS6iQXtRs"
+licence = "Unsplash Licence"
+licence_url = "https://unsplash.com/license"
+url = "https://images.unsplash.com/photo-1783721451016-485e5a49fe96?fm=jpg&q=90&w=3840&h=2160&fit=crop"
+sha256 = "a4c22fb300642af0677af12769e09d7aaffff498d177f3049a8abb4b30e866d6"
+
+# WhiteSur ships as source only: no release files and no distribution
+# packages, and WhiteSur-dark links into WhiteSur, so both come from the
+# tagged source through the theme's own installer, into the user's icons.
+[icons]
+theme = "WhiteSur-dark"
+author = "Vince Liu"
+source = "https://github.com/vinceliuice/WhiteSur-icon-theme"
+licence = "GPL-3.0"
+url = "https://github.com/vinceliuice/WhiteSur-icon-theme/archive/refs/tags/2026-09-10.tar.gz"
+sha256 = "406c9cd59705583f1754b0eaca96cc48bafda042b88ef143f16d8ae1820ecd95"
+build = "./install.sh -d \"$DEST\""
+
+[cursors]
+theme = "macOS-White"
+author = "Abdulkaiz Khatri"
+source = "https://github.com/ful1e5/apple_cursor"
+licence = "GPL-3.0"
+url = "https://github.com/ful1e5/apple_cursor/releases/download/v2.0.1/macOS-White.tar.xz"
+sha256 = "3d2f731ade1828d73b19681db9afc62e6f8d059185e870edda64f8bedb783856"
+
+[settings]
+background_color = "#13160F"
+cursor_size = 24
+theme_scheme = "Dark"
+accent_color = "#F25C2E"   # the orange at the rim of the glow
+rounded_corners = true
+frosting = true
+window_controls_side = "left"
+show_maximize_button = false
+
+# The dock down the left edge, its icons tinted the glow's own reddish orange.
+# The body of the glow, not the accent's rim: the tint is luminance x
+# colour, so the brighter orange keeps each icon's shading.
+dock.position = "left"
+dock.colorize_icons = true
+dock.colorize_color = "#EC8F6B"
+dock.colorize_intensity = 1.0
