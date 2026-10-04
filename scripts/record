@@ -16,8 +16,8 @@ usage() { echo "usage: scripts/record <id> [name]" >&2; exit 2; }
 # Every setting a look can change, besides the wallpaper and the themes.
 SETTINGS="background_color cursor_size theme_scheme accent_color
     rounded_corners frosting window_controls_side show_maximize_button
-    dock.position dock.size dock.colorize_icons dock.colorize_color
-    dock.colorize_intensity"
+    dock.position dock.size dock.magnification dock.colorize_icons
+    dock.colorize_color dock.colorize_intensity desktop.widget"
 
 id=$1; name=${2:-$1}
 here=$(cd "$(dirname "$0")/.." && pwd)
@@ -115,8 +115,10 @@ author=$(gh api user --jq .login 2>/dev/null || git config github.user || true)
     done
 
     echo "[settings]"
+    # A setting this Otto is too old to have is left out.
     for key in $SETTINGS; do
-        echo "$key = $(get "$key")"
+        value=$(get "$key" 2>/dev/null) && [ -n "$value" ] || continue
+        echo "$key = $value"
     done
 } > "$dir/look.toml"
 
