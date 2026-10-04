@@ -98,14 +98,23 @@ Every look has clear credits and links, without exception. They live in
 | `window_controls_side` | `"left"`, `"right"` |
 | `dock.position` | `"bottom"`, `"left"`, `"right"` |
 | `dock.size` | 0.5–2.0 |
+| `dock.magnification` | `true` / `false` |
 | `dock.colorize_icons` | `true` / `false` |
 | `dock.colorize_color` | `"#RRGGBB"`; the tint is luminance × colour, so tint bright, never dark |
 | `dock.colorize_intensity` | 0.0–1.0 |
+| `desktop.widget` | `"none"`, `"calendar"`, `"cross_pad"`, `"grid_pad"`: a page over the wallpaper, drawn by ewwii |
 
-A look that doesn't set `dock.position` gets the dock at the bottom, and one
-that doesn't set `dock.colorize_icons` gets the tint turned off, so one
-look's dock never carries into the next. Other settings a look leaves out
-stay as they were.
+A look that doesn't set `dock.position` gets the dock at the bottom, one
+that doesn't set `dock.colorize_icons` gets the tint turned off, one that
+doesn't set `desktop.widget` gets no widget, and one without a
+`[wallpaper]` gets its `background_color` alone, so one look's dock, widget
+or image never carries into the next. Other settings a look leaves out stay
+as they were.
+
+`desktop.widget` needs ewwii, which Otto uses when it is installed but
+doesn't need: say so in the description of a look that sets one.
+`otto-look` notes it when ewwii is missing. An Otto too old to have a
+setting skips it, and the rest of the look still installs.
 
 `icon_theme`, `cursor_theme` and `background_image` come from `[icons]`,
 `[cursors]` and `[wallpaper]`; don't put them in `[settings]`. Looks don't set
