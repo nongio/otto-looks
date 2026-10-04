@@ -1,16 +1,20 @@
-# Drafting: no picture, one plain burnt orange, and Otto's Grid pad drawn over
-# it: a drafting grid with rulers and a diagonal, a serif title, the date and
-# a note, all in light ink (#f4efe8). The plain field keeps the ink readable
-# everywhere on the screen (4.1:1 against the orange). Light windows, the
-# dock down the left edge.
-#
-# The look has no [wallpaper]: the background is background_color alone.
+# Focus: a warm pink and blue gradient with Otto's Cross pad drawn over it:
+# small crosses, a serif title, the date up the left edge and a note, all in
+# light ink (#f4efe8). Light windows, a blue accent, the dock down the left
+# edge.
 
 [look]
-name = "Drafting"
+name = "Focus"
 version = 1
 author = "nongio"
-description = "A drafting grid in light ink on plain burnt orange. The grid is Otto's Grid pad widget, drawn by ewwii."
+description = "Small crosses in light ink over a warm pink and blue gradient. The crosses are Otto's Cross pad widget, drawn by ewwii."
+
+[wallpaper]
+title = "Focus"
+author = "Riccardo Canalicchio"
+source = "https://github.com/nongio/otto-looks/tree/main/looks/focus"
+licence = "MIT"
+url = "wallpaper.png"
 
 # WhiteSur ships as source only: no release files and no distribution
 # packages, so it comes from the tagged source through the theme's own
@@ -41,7 +45,7 @@ build = "dest=\"$DEST\" ./cursors/install.sh"
 background_color = "#C2520A"
 cursor_size = 32
 theme_scheme = "Light"
-accent_color = "#087BFA"  # a clear blue against the orange field
+accent_color = "#087BFA"
 rounded_corners = true
 frosting = true
 window_controls_side = "left"
@@ -51,6 +55,6 @@ show_maximize_button = false
 dock.position = "left"
 dock.magnification = true
 
-# Otto's Grid pad over the background. Drawn by ewwii, with Libertinus Serif
+# Otto's Cross pad over the wallpaper. Drawn by ewwii, with Libertinus Serif
 # for the title; without ewwii the setting is kept and nothing is drawn.
-desktop.widget = "grid_pad"
+desktop.widget = "cross_pad"

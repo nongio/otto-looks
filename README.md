@@ -26,7 +26,7 @@ applies at once and survives a restart.
 | **Circles** | Kandinsky's Circles in a Circle, 1923. | `otto-look circles` |
 | **Crate Digger** | 52nd Street in the rain, 1948, on aubergine. | `otto-look crate-digger` |
 | **Deep Field** | Webb's First Deep Field, near-black and one violet. | `otto-look deep-field` |
-| **Drafting** | A drafting grid in light ink on plain burnt orange. | `otto-look drafting` |
+| **Focus** | Otto's Cross pad in light ink over a warm pink and blue gradient. | `otto-look focus` |
 | **Ember** | Out-of-focus lights melted into one warm glow on black. | `otto-look ember` |
 | **Otto98** | Windows 98 SE icons on a cool, dithered teal. Square, flat, minimal. | `otto-look otto98` |
 | **Pomodoro** | One wet tomato on a flat green field. | `otto-look pomodoro` |
